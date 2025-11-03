@@ -561,12 +561,12 @@ async def nigeria_pathwise_function(
     """
     
     # Initialize components
-    llm_ref = LLMRef(name=config.llm_name)
+    # Replace lines 564-567 with:
+    llm_ref = LLMRef(config.llm_name)
     llm = await builder.get_llm(llm_ref)
-    
-    embedder_ref = EmbedderRef(name=config.embedder_name)
+
+    embedder_ref = EmbedderRef(config.embedder_name)
     embedder = await builder.get_embedder(embedder_ref)
-    
     # Document processing and retrieval setup
     vector_store = None
     retriever_tool = None

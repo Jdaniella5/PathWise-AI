@@ -31,7 +31,7 @@ embedders:
     model_name: nvidia/nv-embedqa-e5-v5
 
 workflow:
-  _type: career_guide
+  _type: nigeria_pathwise
   tool_names:
     - current_datetime
     - tavily_search
