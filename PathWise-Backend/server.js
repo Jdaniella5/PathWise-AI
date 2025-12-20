@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Dynamic CORS
-const allowedOrigins = process.env.CLIENT_URLS.split(',');
+const allowedOrigins = (process.env.CLIENT_URLS|| "").split(',').filter(Boolean);
 app.use(cors({
   origin: function(origin, callback) {
     // allow requests with no origin (like Postman or server-to-server)
