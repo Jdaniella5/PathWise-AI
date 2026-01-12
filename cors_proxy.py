@@ -1,33 +1,18 @@
 #!/usr/bin/env python3
 """
-CORS proxy server for Nigeria Pathwise Agent
-Proxies requests from frontend to the agent backend
-Configured for Render deployment
+Simple CORS proxy server to test PathwiseAgent
+Simple CORS proxy server to test your pathwise
+Run this on port 3001 to proxy requests to your agent on port 8000
 """
 from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import requests
 import json
-import os
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-# Configure CORS with specific origins for production
-allowed_origins = [
-    'https://pathwise-chi.vercel.app',  # Your production frontend
-    'http://localhost:3000',  # Local development
-    'http://localhost:5173',  # Vite dev server
-    'http://localhost:8080',  # Alternative local port
-]
-
-CORS(app, 
-     origins=allowed_origins,
-     allow_credentials=True,
-     allow_headers=['Content-Type', 'Authorization'],
-     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
-
-# Get agent URL from environment variable (for Render) or use default
-AGENT_BASE_URL = os.getenv('AGENT_BASE_URL', 'http://localhost:8000')
+AGENT_BASE_URL = "http://localhost:8000"
 
 @app.route('/api/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
 def proxy(path):
@@ -36,12 +21,9 @@ def proxy(path):
     if request.method == 'OPTIONS':
         # Handle preflight requests
         response = Response()
-        origin = request.headers.get('Origin')
-        if origin in allowed_origins:
-            response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Origin'] = '*'
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Headers'] = '*'
         return response
     
     url = f"{AGENT_BASE_URL}/{path}"
@@ -49,13 +31,12 @@ def proxy(path):
     try:
         # Forward the request to your agent
         if request.method == 'GET':
-            resp = requests.get(url, params=request.args, timeout=180)
+            resp = requests.get(url, params=request.args)
         else:
             resp = requests.post(url, 
                                json=request.get_json() if request.is_json else None,
                                data=request.get_data() if not request.is_json else None,
-                               headers={'Content-Type': 'application/json'},
-                               timeout=180)
+                               headers={'Content-Type': 'application/json'})
         
         # Return the response
         response = Response(
@@ -64,11 +45,8 @@ def proxy(path):
             headers=dict(resp.headers)
         )
         
-        # Add CORS headers
-        origin = request.headers.get('Origin')
-        if origin in allowed_origins:
-            response.headers['Access-Control-Allow-Origin'] = origin
-            response.headers['Access-Control-Allow-Credentials'] = 'true'
+        # Add CORS headers now
+        response.headers['Access-Control-Allow-Origin'] = '*'
         return response
         
     except Exception as e:
@@ -77,32 +55,11 @@ def proxy(path):
 @app.route('/test')
 def test():
     """Test endpoint"""
-    return jsonify({
-        "status": "CORS proxy server is running", 
-        "agent_url": AGENT_BASE_URL,
-        "environment": "production" if "render.com" in AGENT_BASE_URL else "development"
-    })
-
-@app.route('/health')
-def health():
-    """Health check endpoint for Render"""
-    try:
-        # Try to ping the agent backend
-        resp = requests.get(f"{AGENT_BASE_URL}/health", timeout=5)
-        if resp.status_code == 200:
-            return jsonify({"status": "healthy", "agent_status": "connected"}), 200
-    except:
-        pass
-    
-    return jsonify({"status": "healthy", "agent_status": "disconnected"}), 200
+    return jsonify({"status": "CORS proxy server is running", "agent_url": AGENT_BASE_URL})
 
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 3001))
-    host = os.getenv('HOST', '0.0.0.0')
-    
     print(f"🚀 CORS Proxy Server starting...")
-    print(f"📡 Proxying requests from http://{host}:{port}/api/* to {AGENT_BASE_URL}/*")
-    print(f"🔧 Test the proxy: http://{host}:{port}/test")
-    print(f"❤️  Health check: http://{host}:{port}/health")
+    print(f"📡 Proxying requests from http://localhost:3001/api/* to {AGENT_BASE_URL}/*")
+    print(f"🔧 Test the proxy: http://localhost:3001/test")
     
-    app.run(host=host, port=port, debug=False)
+    app.run(host='0.0.0.0', port=3001, debug=True)
