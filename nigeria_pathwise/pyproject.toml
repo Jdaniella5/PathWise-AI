@@ -6,13 +6,13 @@ requires = ["setuptools >= 64"]
 name = "nigeria_pathwise"
 version = "0.1.0"
 dependencies = [
-  "nvidia-nat[langchain]",
+  "aiqtoolkit[langchain]",
 ]
 requires-python = ">=3.11,<3.13"
-description = "Custom NeMo Agent Toolkit Workflow"
+description = "Custom AIQ Toolkit Workflow"
 classifiers = ["Programming Language :: Python"]
 
 
 
-[project.entry-points.'nat.components']
+[project.entry-points.'aiq.components']
 nigeria_pathwise = "nigeria_pathwise.register"
