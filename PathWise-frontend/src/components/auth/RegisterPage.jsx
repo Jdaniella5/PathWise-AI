@@ -44,7 +44,7 @@ const RegisterPage = () => {
     try {
       console.log('Submitting registration for:', formData.email);
       
-      const res = await fetch('https://pathwise-backend-j09c.onrender.com/api/users/register', {
+      const res = await fetch('http://localhost:1180/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -74,20 +74,25 @@ const RegisterPage = () => {
 
       console.log('Registration successful:', responseData);
 
-      // Store data in memory (localStorage not supported in artifacts)
-      const verificationData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email
-      };
+      // Store the email for verification step
+      try {
+        localStorage.setItem('firstName', formData.firstName);
+        localStorage.setItem('lastName', formData.lastName);
+        localStorage.setItem('verifyEmail', formData.email);
+        console.log('Email stored in localStorage:', formData.email);
+      } catch (storageError) {
+        console.warn('LocalStorage not available:', storageError);
+        // Continue anyway, pass email as state
+      }
 
-      // Add a small delay
+      // Add a small delay to ensure localStorage is set
       setTimeout(() => {
         console.log('Navigating to /verify');
         
+        // Navigate with state as fallback if localStorage fails
         navigate('/verify', { 
-          state: verificationData,
-          replace: true
+          state: { email: formData.email },
+          replace: true // Use replace to prevent going back to register
         });
       }, 100);
 
@@ -100,15 +105,15 @@ const RegisterPage = () => {
   };
   
   return (
-    <div className="min-h-screen w-full px-4 sm:px-6 py-4 relative overflow-x-hidden" style={{ background: '#101727' }}>
+    <div className="min-h-screen w-full px-6 py-4 relative" style={{ background: '#101727' }}>
       {/* Green elliptical blur effect */}
       <div
         className="absolute pointer-events-none"
         style={{
           top: '10%',
           left: '15%',
-          width: '300px',
-          height: '150px',
+          width: '400px',
+          height: '200px',
           background: '#01742B',
           borderRadius: '50%',
           filter: 'blur(80px)',
@@ -123,8 +128,8 @@ const RegisterPage = () => {
         style={{
           top: '60%',
           right: '10%',
-          width: '250px',
-          height: '125px',
+          width: '300px',
+          height: '150px',
           background: '#01742B',
           borderRadius: '50%',
           filter: 'blur(70px)',
@@ -135,7 +140,7 @@ const RegisterPage = () => {
 
       {/* Navbar with gradient border */}
       <nav
-        className="flex items-center justify-between px-4 sm:px-8 md:px-12 py-4 relative overflow-hidden w-full max-w-full mx-auto mb-8"
+        className="flex items-center justify-between px-12 py-4 relative overflow-hidden w-full max-w-[95%] mx-auto mb-8"
         style={{
           background: 'rgba(19, 21, 27, 0.03)',
           backdropFilter: 'blur(7.4px)',
@@ -161,19 +166,19 @@ const RegisterPage = () => {
           }}
         />
 
-        <div className="text-green-400 font-bold text-lg sm:text-xl relative z-10">
+        <div className="text-green-400 font-bold text-xl relative z-10">
           PathWise AI
         </div>
-        <a href="/" className="text-white hover:text-green-400 transition-colors duration-200 flex items-center space-x-1 sm:space-x-2 relative z-10">
+        <a href="/" className="text-white hover:text-green-400 transition-colors duration-200 flex items-center space-x-2 relative z-10">
           <span>🏠</span>
-          <span className="text-sm sm:text-base">Home</span>
+          <span>Home</span>
         </a>
       </nav>
 
       {/* Register Form Container */}
       <div className="flex items-center justify-center min-h-[70vh] relative z-10">
         <div
-          className="w-full max-w-lg p-6 sm:p-8 relative overflow-hidden"
+          className="w-full max-w-lg p-8 relative overflow-hidden"
           style={{
             background: 'rgba(19, 21, 27, 0.4)',
             backdropFilter: 'blur(10px)',
@@ -199,9 +204,9 @@ const RegisterPage = () => {
           />
 
           {/* Page Title */}
-          <div className="text-center mb-6 sm:mb-8 relative z-10">
-            <h1 className="text-xl sm:text-2xl font-bold text-white mb-2">Create Account</h1>
-            <p className="text-sm sm:text-base text-gray-300">Sign up to get started with PathWise AI</p>
+          <div className="text-center mb-8 relative z-10">
+            <h1 className="text-2xl font-bold text-white mb-2">Create Account</h1>
+            <p className="text-gray-300">Sign up to get started with PathWise AI</p>
           </div>
 
           {/* Error Message */}
@@ -212,8 +217,8 @@ const RegisterPage = () => {
           )}
 
           {/* Sign Up Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 relative z-10">
-            <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+            <div className="flex space-x-4">
               <input
                 type="text"
                 name="firstName"
@@ -221,7 +226,7 @@ const RegisterPage = () => {
                 value={formData.firstName}
                 onChange={handleChange}
                 required
-                className="w-full sm:flex-1 px-4 py-3 bg-transparent border border-green-400 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-300 transition-colors duration-200"
+                className="flex-1 px-4 py-3 bg-transparent border border-green-400 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-300 transition-colors duration-200"
               />
               <input
                 type="text"
@@ -230,7 +235,7 @@ const RegisterPage = () => {
                 value={formData.lastName}
                 onChange={handleChange}
                 required
-                className="w-full sm:flex-1 px-4 py-3 bg-transparent border border-green-400 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-300 transition-colors duration-200"
+                className="flex-1 px-4 py-3 bg-transparent border border-green-400 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-green-300 transition-colors duration-200"
               />
             </div>
             <div>
@@ -312,7 +317,7 @@ const RegisterPage = () => {
 
           {/* Login Link */}
           <div className="text-center mt-6 relative z-10">
-            <p className="text-sm sm:text-base text-gray-300">
+            <p className="text-gray-300">
               Already have an account?{' '}
               <a href="/login" className="text-green-400 hover:text-green-300 font-medium">
                 Sign in here
