@@ -36,7 +36,7 @@ const LoginPage = () => {
       localStorage.setItem('token', data.token);
 
       // Redirect to course-selection
-      navigate('/select-path');
+      navigate('/course-selection');
     } catch (err) {
       setError(err.message);
     } finally {
