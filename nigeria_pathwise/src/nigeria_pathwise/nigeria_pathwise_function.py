@@ -37,13 +37,13 @@ from langchain import hub
 from langchain_core.tools import tool
 from langchain_core.prompts import PromptTemplate
 
-from nat.builder.builder import Builder
-from nat.builder.framework_enum import LLMFrameworkEnum
-from nat.builder.function_info import FunctionInfo
-from nat.cli.register_workflow import register_function
-from nat.data_models.component_ref import EmbedderRef, FunctionRef, LLMRef
-from nat.data_models.function import FunctionBaseConfig
-from nat.data_models.api_server import AIQChatRequest, AIQChatResponse
+from aiq.builder.builder import Builder
+from aiq.builder.framework_enum import LLMFrameworkEnum
+from aiq.builder.function_info import FunctionInfo
+from aiq.cli.register_workflow import register_function
+from aiq.data_models.component_ref import EmbedderRef, FunctionRef, LLMRef
+from aiq.data_models.function import FunctionBaseConfig
+from aiq.data_models.api_server import AIQChatRequest, AIQChatResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

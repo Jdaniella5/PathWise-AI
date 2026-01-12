@@ -9,7 +9,6 @@ import LoginPage from './components/auth/LoginPage';
 import EmailVerifyPage from './components/auth/EmailVerifyPage';
 
 import CareerPathPage from './components/CareerPath';
-import SelectPath from './components/SelectPath';
 import { Courselection } from './components/Courselection';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -19,7 +18,6 @@ import Assestment from './components/Assestment';
 import Result from './components/Result';
 import Test from './components/Test';
 import Project from './components/Projects';
-import HighSchoolPath from './components/HighSchoolPath';
 
 // ✅ Page transition animation wrapper
 const AnimatedPageWrapper = ({ children }) => {
@@ -68,10 +66,7 @@ const AnimatedRoutes = () => {
         <Route path="/verify" element={<AnimatedPageWrapper><EmailVerifyPage /></AnimatedPageWrapper>} />
 
         {/* ✅ Other routes also WITHOUT Navbar + Footer */}
-        <Route path="/select-path" element={<AnimatedPageWrapper><SelectPath /></AnimatedPageWrapper>} />
-
         <Route path="/course-selection" element={<AnimatedPageWrapper><Courselection /></AnimatedPageWrapper>} />
-        <Route path="/highschool-path" element={<AnimatedPageWrapper><HighSchoolPath /></AnimatedPageWrapper>} />
         <Route path="/career-path" element={<AnimatedPageWrapper><CareerPathPage /></AnimatedPageWrapper>} />
         <Route path="/job-roles" element={<AnimatedPageWrapper><Roles /></AnimatedPageWrapper>} />
         <Route path="/skills" element={<AnimatedPageWrapper><Skills /></AnimatedPageWrapper>} />
